@@ -1,19 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import axios from "axios";
-import { useParams } from "next/navigation";
 
 import { Modal } from "@/components/ui/modal";
 import { useDeleteStoreModal } from "@/hooks/use-delete-modal";
 import { Button } from "@/components/ui/button";
 
-const DeleteStoreModal = () => {
+const DeleteStoreModal = ({
+  onDelete,
+  loading,
+}: {
+  onDelete: () => void;
+  loading?: boolean;
+}) => {
   const [isMount, setIsMount] = useState(false);
   const deleteModal = useDeleteStoreModal();
-  const [loading, setLoading] = useState(false);
-  const params = useParams();
 
   useEffect(() => {
     setIsMount(true);
@@ -22,20 +23,6 @@ const DeleteStoreModal = () => {
   if (!isMount) {
     return null;
   }
-
-  const handleConfirm = async () => {
-    try {
-      setLoading(true);
-      await axios.delete(`/api/stores/${params.storeId}`);
-      toast.success("Deleted successful");
-      window.location.assign("/");
-    } catch (error) {
-      console.log(error);
-      toast.error("Make sure you removed all products and categories from the store.");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <Modal
@@ -52,7 +39,7 @@ const DeleteStoreModal = () => {
         >
           Cancel
         </Button>
-        <Button disabled={loading} onClick={handleConfirm}>
+        <Button disabled={loading} onClick={onDelete}>
           Confirm
         </Button>
       </div>

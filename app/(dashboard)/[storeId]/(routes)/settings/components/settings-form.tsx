@@ -62,9 +62,23 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ name }) => {
     }
   };
 
+  const onDelete = async () => {
+    try {
+      setLoading(true);
+      await axios.delete(`/api/stores/${params.storeId}`);
+      toast.success("Deleted successful");
+      window.location.assign("/");
+    } catch (error) {
+      console.log(error);
+      toast.error("Make sure you removed all products and categories first.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
-      <DeleteStoreModal />
+      <DeleteStoreModal onDelete={onDelete} loading={loading} />
       <div className="flex justify-between items-center">
         <Heading title="Settings" description="Manage store preferences" />
         <Button
@@ -100,7 +114,11 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ name }) => {
         </form>
       </Form>
       <Separator />
-      <ApiAlert title="NEXT_PUBLIC_API_URL" description={`${origin}/api/${params.storeId}`} varient="public"/>
+      <ApiAlert
+        title="NEXT_PUBLIC_API_URL"
+        description={`${origin}/api/${params.storeId}`}
+        varient="public"
+      />
     </>
   );
 };

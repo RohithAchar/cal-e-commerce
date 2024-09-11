@@ -17,7 +17,7 @@ export async function PATCH(req: NextRequest, { params }: ParamsType) {
     const { name } = data;
 
     if (!userId) {
-      return new NextResponse("Unauthenticated", { status: 500 });
+      return new NextResponse("Unauthenticated", { status: 401 });
     }
 
     const store = await prisma.store.updateMany({
@@ -30,7 +30,7 @@ export async function PATCH(req: NextRequest, { params }: ParamsType) {
     });
 
     if (!store) {
-      return new NextResponse("Store not found", { status: 500 });
+      return new NextResponse("Store not found", { status: 401 });
     }
 
     return NextResponse.json(store);
@@ -45,7 +45,7 @@ export async function DELETE(req: NextRequest, { params }: ParamsType) {
     const { userId } = auth();
 
     if (!userId) {
-      return new NextResponse("Unauthenticated", { status: 500 });
+      return new NextResponse("Unauthenticated", { status: 401 });
     }
 
     const store = await prisma.store.deleteMany({
@@ -55,7 +55,7 @@ export async function DELETE(req: NextRequest, { params }: ParamsType) {
     });
 
     if (!store) {
-      return new NextResponse("Store not found", { status: 500 });
+      return new NextResponse("Store not found", { status: 401 });
     }
 
     return NextResponse.json(store);

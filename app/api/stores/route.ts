@@ -9,11 +9,11 @@ export async function POST(req: Request) {
     const { name } = body;
 
     if (!userId) {
-      return new NextResponse("Unauthorized", { status: 500 });
+      return new NextResponse("Unauthorized", { status: 401 });
     }
 
     if (!name) {
-      return new NextResponse("Name is required", { status: 500 });
+      return new NextResponse("Name is required", { status: 401 });
     }
 
     const store = await prisma.store.create({
