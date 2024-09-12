@@ -31,6 +31,11 @@ const MainNavigation = () => {
       active: pathName === `/${storeId}/sizes`,
     },
     {
+      href: `/${storeId}/colors`,
+      label: "Colors",
+      active: pathName === `/${storeId}/colors`,
+    },
+    {
       href: `/${storeId}/settings`,
       label: "Settings",
       active: pathName === `/${storeId}/settings`,
