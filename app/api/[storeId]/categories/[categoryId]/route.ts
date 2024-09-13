@@ -23,15 +23,19 @@ export async function PATCH(
     }
 
     if (!name) {
-      return new NextResponse("Name is required", { status: 401 });
+      return new NextResponse("Name is required", { status: 400 });
     }
 
     if (!billboardId) {
-      return new NextResponse("Billboard id is required", { status: 401 });
+      return new NextResponse("Billboard id is required", { status: 400 });
     }
 
     if (!params.storeId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse("Unauthorized", { status: 403 });
+    }
+
+    if (!params.categoryId) {
+      return new NextResponse("Category id required", { status: 400 });
     }
 
     const storeByUser = prisma.store.findFirst({
@@ -42,7 +46,7 @@ export async function PATCH(
     });
 
     if (!storeByUser) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse("Unauthorized", { status: 403 });
     }
 
     const category = await prisma.category.update({
@@ -59,7 +63,7 @@ export async function PATCH(
     return NextResponse.json(category, { status: 200 });
   } catch (error) {
     console.log("[CATEGORY_PATCH]" + error);
-    return new NextResponse("Something went wrong", { status: 401 });
+    return new NextResponse("Something went wrong", { status: 500 });
   }
 }
 
@@ -76,7 +80,11 @@ export async function GET(
 ) {
   try {
     if (!params.storeId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse("Unauthorized", { status: 403 });
+    }
+
+    if (!params.categoryId) {
+      return new NextResponse("Category id required", { status: 400 });
     }
 
     const category = await prisma.category.findFirst({
@@ -88,7 +96,7 @@ export async function GET(
     return NextResponse.json(category, { status: 200 });
   } catch (error) {
     console.log("[BILLBOARD_GET]" + error);
-    return new NextResponse("Something went wrong", { status: 401 });
+    return new NextResponse("Something went wrong", { status: 500 });
   }
 }
 
@@ -111,7 +119,11 @@ export async function DELETE(
     }
 
     if (!params.storeId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse("Unauthorized", { status: 403 });
+    }
+
+    if (!params.categoryId) {
+      return new NextResponse("Category id required", { status: 400 });
     }
 
     const storeByUser = prisma.store.findFirst({
@@ -122,7 +134,7 @@ export async function DELETE(
     });
 
     if (!storeByUser) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse("Unauthorized", { status: 403 });
     }
 
     const category = await prisma.category.delete({
@@ -134,6 +146,6 @@ export async function DELETE(
     return NextResponse.json(category, { status: 200 });
   } catch (error) {
     console.log("[CATEGORY_DELETE]" + error);
-    return new NextResponse("Something went wrong", { status: 401 });
+    return new NextResponse("Something went wrong", { status: 500 });
   }
 }

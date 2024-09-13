@@ -22,15 +22,15 @@ export async function POST(
     }
 
     if (!name) {
-      return new NextResponse("Name is required", { status: 401 });
+      return new NextResponse("Name is required", { status: 400 });
     }
 
     if (!value) {
-      return new NextResponse("Value is required", { status: 401 });
+      return new NextResponse("Value is required", { status: 400 });
     }
 
     if (!params.storeId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse("Unauthorized", { status: 403 });
     }
 
     const storeByUser = prisma.store.findFirst({
@@ -41,7 +41,7 @@ export async function POST(
     });
 
     if (!storeByUser) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse("Unauthorized", { status: 403 });
     }
 
     const color = await prisma.color.create({
@@ -55,7 +55,7 @@ export async function POST(
     return NextResponse.json(color, { status: 200 });
   } catch (error) {
     console.log("[COLORS_POST]" + error);
-    return new NextResponse("Something went wrong", { status: 401 });
+    return new NextResponse("Something went wrong", { status: 500 });
   }
 }
 
@@ -73,41 +73,6 @@ export async function GET(
     return NextResponse.json(colors, { status: 200 });
   } catch (error) {
     console.log("[COLORS_GET]" + error);
-    return new NextResponse("Something went wrong", { status: 401 });
-  }
-}
-
-export async function DELETE(
-  req: Request,
-  { params }: { params: { storeId: string } }
-) {
-  try {
-    const { userId }: { userId: string | null } = auth();
-
-    if (!userId) {
-      return new NextResponse("Unauthenticated", { status: 401 });
-    }
-
-    const storeByUser = prisma.store.findFirst({
-      where: {
-        id: params.storeId,
-        userId,
-      },
-    });
-
-    if (!storeByUser) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
-
-    const colors = await prisma.color.deleteMany({
-      where: {
-        storeId: params.storeId,
-      },
-    });
-
-    return NextResponse.json(colors, { status: 200 });
-  } catch (error) {
-    console.log("[COLORS_GET]" + error);
-    return new NextResponse("Something went wrong", { status: 401 });
+    return new NextResponse("Something went wrong", { status: 500 });
   }
 }

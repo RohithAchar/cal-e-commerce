@@ -23,15 +23,19 @@ export async function PATCH(
     }
 
     if (!name) {
-      return new NextResponse("Name is required", { status: 401 });
+      return new NextResponse("Name is required", { status: 400 });
     }
 
     if (!value) {
-      return new NextResponse("Value is required", { status: 401 });
+      return new NextResponse("Value is required", { status: 400 });
     }
 
     if (!params.storeId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse("Unauthorized", { status: 403 });
+    }
+
+    if (!params.sizeId) {
+      return new NextResponse("Size id required", { status: 400 });
     }
 
     const storeByUser = prisma.store.findFirst({
@@ -42,7 +46,7 @@ export async function PATCH(
     });
 
     if (!storeByUser) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse("Unauthorized", { status: 403 });
     }
 
     const size = await prisma.size.update({
@@ -59,7 +63,7 @@ export async function PATCH(
     return NextResponse.json(size, { status: 200 });
   } catch (error) {
     console.log("[SIZE_PATCH]" + error);
-    return new NextResponse("Something went wrong", { status: 401 });
+    return new NextResponse("Something went wrong", { status: 500 });
   }
 }
 
@@ -79,6 +83,10 @@ export async function GET(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    if (!params.sizeId) {
+      return new NextResponse("Size id required", { status: 400 });
+    }
+
     const billboard = await prisma.billBoard.findFirst({
       where: {
         id: params.sizeId,
@@ -88,7 +96,7 @@ export async function GET(
     return NextResponse.json(billboard, { status: 200 });
   } catch (error) {
     console.log("[SIZE_GET]" + error);
-    return new NextResponse("Something went wrong", { status: 401 });
+    return new NextResponse("Something went wrong", { status: 500 });
   }
 }
 
@@ -112,7 +120,7 @@ export async function DELETE(
     }
 
     if (!params.storeId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse("Unauthorized", { status: 403 });
     }
 
     const storeByUser = prisma.store.findFirst({
@@ -123,7 +131,11 @@ export async function DELETE(
     });
 
     if (!storeByUser) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse("Unauthorized", { status: 403 });
+    }
+
+    if (!params.sizeId) {
+      return new NextResponse("Size id required", { status: 400 });
     }
 
     const billboard = await prisma.size.delete({
@@ -135,6 +147,6 @@ export async function DELETE(
     return NextResponse.json(billboard, { status: 200 });
   } catch (error) {
     console.log("[SIZE_DELETE]" + error);
-    return new NextResponse("Something went wrong", { status: 401 });
+    return new NextResponse("Something went wrong", { status: 500 });
   }
 }

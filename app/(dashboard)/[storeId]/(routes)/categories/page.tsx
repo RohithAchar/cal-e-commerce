@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import CategoriesClient from "./components/client";
 import { CategoriesColumn } from "./components/columns";
 
-const Categories = async ({
+const CategoriesPage = async ({
   params,
 }: {
   params: {
@@ -39,4 +39,4 @@ const Categories = async ({
   );
 };
 
-export default Categories;
+export default CategoriesPage;

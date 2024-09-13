@@ -9,14 +9,23 @@ export async function PATCH(
   }: {
     params: {
       storeId: string;
-      colorId: string;
+      productId: string;
     };
   }
 ) {
   try {
     const { userId }: { userId: string | null } = auth();
     const body = await req.json();
-    const { name, value } = body;
+    const {
+      name,
+      price,
+      images,
+      categoryId,
+      sizeId,
+      colorId,
+      isArchived,
+      isFeatured,
+    } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 401 });
@@ -26,16 +35,32 @@ export async function PATCH(
       return new NextResponse("Name is required", { status: 400 });
     }
 
-    if (!value) {
-      return new NextResponse("Value is required", { status: 400 });
+    if (!price) {
+      return new NextResponse("Price is required", { status: 400 });
+    }
+
+    if (!images || !images.length) {
+      return new NextResponse("Image is required", { status: 400 });
+    }
+
+    if (!categoryId) {
+      return new NextResponse("Category Id is required", { status: 400 });
+    }
+
+    if (!sizeId) {
+      return new NextResponse("Size Id is required", { status: 400 });
+    }
+
+    if (!colorId) {
+      return new NextResponse("Color Id is required", { status: 400 });
     }
 
     if (!params.storeId) {
       return new NextResponse("Unauthorized", { status: 403 });
     }
 
-    if (!params.colorId) {
-      return new NextResponse("Color id required", { status: 400 });
+    if (!params.productId) {
+      return new NextResponse("Product id required", { status: 400 });
     }
 
     const storeByUser = prisma.store.findFirst({
@@ -49,20 +74,41 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 403 });
     }
 
-    const color = await prisma.color.update({
+    await prisma.product.update({
       where: {
-        id: params.colorId,
+        id: params.productId,
         storeId: params.storeId,
       },
       data: {
         name,
-        value,
+        price,
+        colorId,
+        sizeId,
+        categoryId,
+        isArchived,
+        isFeatured,
+        images: {
+          deleteMany: {},
+        },
       },
     });
 
-    return NextResponse.json(color, { status: 200 });
+    const product = await prisma.product.update({
+      where: {
+        id: params.productId,
+      },
+      data: {
+        images: {
+          createMany: {
+            data: [...images.map((image: { url: string }) => image)],
+          },
+        },
+      },
+    });
+
+    return NextResponse.json(product, { status: 200 });
   } catch (error) {
-    console.log("[COLOR_PATCH]" + error);
+    console.log("[PRODUCT_PATCH]" + error);
     return new NextResponse("Something went wrong", { status: 500 });
   }
 }
@@ -74,7 +120,7 @@ export async function GET(
   }: {
     params: {
       storeId: string;
-      colorId: string;
+      productId: string;
     };
   }
 ) {
@@ -83,19 +129,25 @@ export async function GET(
       return new NextResponse("Unauthorized", { status: 403 });
     }
 
-    if (!params.colorId) {
-      return new NextResponse("Color id required", { status: 400 });
+    if (!params.productId) {
+      return new NextResponse("Product id required", { status: 400 });
     }
 
-    const color = await prisma.color.findFirst({
+    const product = await prisma.product.findFirst({
       where: {
-        id: params.colorId,
+        id: params.productId,
+      },
+      include: {
+        images: true,
+        size: true,
+        color: true,
+        category: true,
       },
     });
 
-    return NextResponse.json(color, { status: 200 });
+    return NextResponse.json(product, { status: 200 });
   } catch (error) {
-    console.log("[COLOR_GET]" + error);
+    console.log("[PRODUCT_GET]" + error);
     return new NextResponse("Something went wrong", { status: 500 });
   }
 }
@@ -107,7 +159,7 @@ export async function DELETE(
   }: {
     params: {
       storeId: string;
-      colorId: string;
+      productId: string;
     };
   }
 ) {
@@ -122,8 +174,8 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 403 });
     }
 
-    if (!params.colorId) {
-      return new NextResponse("Color id required", { status: 400 });
+    if (!params.productId) {
+      return new NextResponse("Product id required", { status: 400 });
     }
 
     const storeByUser = prisma.store.findFirst({
@@ -137,15 +189,15 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 403 });
     }
 
-    const color = await prisma.color.delete({
+    const product = await prisma.product.delete({
       where: {
-        id: params.colorId,
+        id: params.productId,
       },
     });
 
-    return NextResponse.json(color, { status: 200 });
+    return NextResponse.json(product, { status: 200 });
   } catch (error) {
-    console.log("[COLOR_DELETE]" + error);
+    console.log("[PRODUCT _DELETE]" + error);
     return new NextResponse("Something went wrong", { status: 500 });
   }
 }

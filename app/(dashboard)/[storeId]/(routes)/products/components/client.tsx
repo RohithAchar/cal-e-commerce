@@ -10,13 +10,13 @@ import { Separator } from "@/components/ui/separator";
 import { DataTable } from "@/components/ui/data-table";
 import ApiList from "@/components/ui/api-list";
 
-import { SizeColumn, columns } from "./columns";
+import { ProductColumn, columns } from "./columns";
 
-interface SizeProps {
-  data: SizeColumn[];
+interface ProductClientProps {
+  data: ProductColumn[];
 }
 
-const SizesClient: React.FC<SizeProps> = ({ data }) => {
+const ProductClient: React.FC<ProductClientProps> = ({ data }) => {
   const params = useParams();
   const route = useRouter();
 
@@ -24,21 +24,21 @@ const SizesClient: React.FC<SizeProps> = ({ data }) => {
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title={`Sizes(${data.length})`}
-          description="Manage sizes for your store"
+          title={`Products(${data.length})`}
+          description="Manage products for your store"
         />
-        <Button onClick={() => route.push(`/${params.storeId}/sizes/new`)}>
-          <PlusIcon className="w-4 h-4" />
-          Add new size
+        <Button onClick={() => route.push(`/${params.storeId}/products/new`)}>
+          <PlusIcon className="w-4 h-4 mr-2" />
+          Add new product
         </Button>
       </div>
       <Separator />
       <DataTable columns={columns} data={data} searchKey="name" />
       <Heading title="API" description="Api lists." />
       <Separator />
-      <ApiList entityName="sizes" entityIdName="sizeId" />
+      <ApiList entityName="products" entityIdName="productsId" />
     </>
   );
 };
 
-export default SizesClient;
+export default ProductClient;

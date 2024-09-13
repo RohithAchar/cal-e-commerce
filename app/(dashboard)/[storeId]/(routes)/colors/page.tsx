@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import ColorsClient from "./components/client";
 import { ColorColumn } from "./components/columns";
 
-const Sizes = async ({
+const ColorsPage = async ({
   params,
 }: {
   params: {
@@ -36,4 +36,4 @@ const Sizes = async ({
   );
 };
 
-export default Sizes;
+export default ColorsPage;

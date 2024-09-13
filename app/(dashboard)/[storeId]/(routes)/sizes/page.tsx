@@ -1,10 +1,10 @@
 import prisma from "@/lib/prismadb";
 import { format } from "date-fns";
 
-import CategoriesClient from "./components/client";
+import SizesClient from "./components/client";
 import { SizeColumn } from "./components/columns";
 
-const Sizes = async ({
+const SizesPage = async ({
   params,
 }: {
   params: {
@@ -20,7 +20,7 @@ const Sizes = async ({
     },
   });
 
-  const formatedCategories: SizeColumn[] = sizes.map((item) => ({
+  const formatedSizes: SizeColumn[] = sizes.map((item) => ({
     id: item.id,
     name: item.name,
     value: item.value,
@@ -30,10 +30,10 @@ const Sizes = async ({
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <CategoriesClient data={formatedCategories} />
+        <SizesClient data={formatedSizes} />
       </div>
     </div>
   );
 };
 
-export default Sizes;
+export default SizesPage;

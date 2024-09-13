@@ -16,8 +16,6 @@ import {
 
 import { BillboardColumn } from "./columns";
 import { Button } from "@/components/ui/button";
-import DeleteStoreModal from "@/components/ui/modals/delete-store-modal";
-import { useDeleteStoreModal } from "@/hooks/use-delete-modal";
 
 interface CellActionsProps {
   data: BillboardColumn;
@@ -25,7 +23,6 @@ interface CellActionsProps {
 
 const CellActions: React.FC<CellActionsProps> = ({ data }) => {
   const [loading, setLoading] = useState(false);
-  const deleteStoreModal = useDeleteStoreModal();
   const router = useRouter();
   const params = useParams();
 
@@ -47,7 +44,6 @@ const CellActions: React.FC<CellActionsProps> = ({ data }) => {
 
   return (
     <>
-      <DeleteStoreModal onDelete={onDelete} />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
@@ -74,7 +70,11 @@ const CellActions: React.FC<CellActionsProps> = ({ data }) => {
             <Edit className="h-4 w-4 mr-2" />
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => deleteStoreModal.onOpen()}>
+          <DropdownMenuItem
+            onClick={() => {
+              onDelete();
+            }}
+          >
             <Trash className="w-4 h-4 mr-2" />
             Delete
           </DropdownMenuItem>
