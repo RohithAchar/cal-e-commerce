@@ -4,7 +4,7 @@ import { Trash } from "lucide-react";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -70,6 +70,15 @@ const ProductForm: React.FC<ProductFormProps> = ({
   const route = useRouter();
   const imageStore = useImageStore();
 
+  useEffect(() => {
+    initialData?.images.map((image) => {
+      imageStore.add(image.url);
+    });
+    return () => {
+      imageStore.removeAll();
+    };
+  }, []);
+
   const title = initialData ? "Update product" : "Add new product";
   const description = initialData
     ? "Update your product."
@@ -98,7 +107,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
   const onSubmit = async (data: any) => {
     data = { ...data, images: imageStore.values };
-    console.log(data);
     try {
       setLoading(true);
       if (initialData) {

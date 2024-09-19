@@ -8,6 +8,7 @@ interface ImageStore {
   values: ImageUrl[];
   add: (url: string) => void;
   remove: (url: string) => void;
+  removeAll: () => void;
 }
 
 const useImageStore = create<ImageStore>((set) => ({
@@ -20,6 +21,7 @@ const useImageStore = create<ImageStore>((set) => ({
     set((state) => ({
       values: state.values.filter((image) => image.url !== url),
     })),
+  removeAll: () => set((state) => ({ values: [] })),
 }));
 
 export default useImageStore;
