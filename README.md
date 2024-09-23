@@ -38,7 +38,7 @@ Before running the project, make sure you have the following installed:
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/RohithAchar/e-commerce-admin.git
-   cd ecommerce-admin
+   cd e-commerce-admin
    ```
 
 2. **Install dependencies**:
